@@ -6,8 +6,6 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\Doctor\DoctorController;
 use App\Http\Controllers\UserController;
-use App\Models\Advice;
-use App\Models\Article;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,12 +25,10 @@ Route::post("logout" , [AuthController::class , "logout"])->middleware("auth:san
 
 Route::post("forget-password" , [AuthController::class , 'forgetPassword']);
 
-Route::post('reset-password' , [AuthController::class , 'resetPassword'])->name("reset.password");
+Route::post('check-code' , [AuthController::class , 'checkCode']);
+Route::post('reset-password' , [AuthController::class , 'resetPassword'])->middleware(['auth:sanctum']);
 
 
-Route::get('/reset-password/{token}', function (string $token) {
-    return response()->json( ['token' => $token]);
-})->middleware('guest')->name('password.reset');
 
 
 

@@ -4,17 +4,18 @@ namespace App\Http\Controllers\Auth;
 
 
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Mail\ResetPasswordMail;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Mail;
-use App\Http\Requests\Auth\LoginRequest;
-use Laravel\Sanctum\PersonalAccessToken;
-use App\Http\Requests\Auth\RegisterRequest;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use function Laravel\Prompts\password;
+use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Support\Facades\Password;
 
-use function Laravel\Prompts\password;
+use Laravel\Sanctum\PersonalAccessToken;
+use App\Http\Requests\Auth\RegisterRequest;
 
 class AuthController extends Controller
 {
@@ -63,69 +64,73 @@ class AuthController extends Controller
         ]);
 
 
-        Password::sendResetLink(['email'=>$request['email']]);
+        $rand =  random_int(1000 , 9999);
+
+        $user = User::query()->where('email' , $request['email'])->first();
+        $user->update(["reset_code" =>$rand]);
+
+        Mail::to($request['email'])->send(new ResetPasswordMail($user->refresh() ));
 
 
-        // $user = User::query()->where('email' , $request['email'])->first();
-        // $token = $user->createToken(name:'auth_token' , abilities:["*"], expiresAt: now()->addHours(3))->plainTextToken;
-
-
-
-        // Mail::to("ahmed@gmail.com")->send(new ResetPasswordMail($user , $token));
-
-        // return response()->json([
-        //     'message' => 'A password reset link has been sent to your email.',
-        //     'email' => $user->email,
-        //     'token_expiration' => now()->addHours(3)->toDateTimeString(),
-        // ], 200);
-
+        return response()->json("we sent email to your mail encluded code change password");
 
     }
 
-    public function ViewResetPassword(Request $request){
 
+    public function checkCode(Request $request)
+    {
         $request->validate([
-            'token' => 'required'
+            'email' => 'required|email|exists:users,email',
+            'reset_code' => 'required|string'
         ]);
 
-        $personalAccessToken = PersonalAccessToken::findToken($request['token']);
-        $user = $personalAccessToken->tokenable;
-        dd($user->name);
 
+        $user = User::where('email', $request->email)->firstOrFail();
+
+
+        if (is_null($user->reset_code)) {
+            return response()->json([
+                'message' => 'You do not have a reset code.'
+            ], 400);
+        }
+
+
+        if ($request->reset_code !== $user->reset_code) {
+            return response()->json([
+                'message' => 'The reset code is invalid.'
+            ], 400);
+        }
+
+        $user->reset_code = null;
+        $user->save();
+
+        return response()->json([
+            'token' => $user->createToken('auth_token')->plainTextToken
+        ], 200);
     }
-
 
 
 
     public function resetPassword(Request $request)
-{
-    $request->validate([
-        'token' => "required",
-        'password' => 'required|confirmed|min:6',
-    ]);
+    {
+        $request->validate([
+            'password' => 'required|confirmed|min:6',
+        ]);
 
-    $personalAccessToken = PersonalAccessToken::findToken($request['token']);
+        $user = $request->user('sanctum');
 
-    if (!$personalAccessToken) {
-        return response()->json([
-            'error' => 'Invalid token.',
-        ], 401);
+        $updated = $user->update([
+            'password' => $request['password']
+        ]);
+
+        if ($updated) {
+            return response()->json([
+                'message' => 'Password reset successfully.'
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'Failed to reset password. Please try again.'
+            ], 500);
+        }
     }
-
-    $user = $personalAccessToken->tokenable;
-
-    if (Hash::check($request['password'], $user->password)) {
-        return response()->json([
-            'error' => 'The new password cannot be the same as the existing password.',
-        ], 422);
-    }
-
-    // Update the user's password
-    $user->password = $request['password'];
-    $user->save();
-
-    return response()->json([
-        'message' => 'Your password has been reset successfully.',
-    ], 200);
-}
 }
