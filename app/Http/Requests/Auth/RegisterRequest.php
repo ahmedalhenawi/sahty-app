@@ -25,10 +25,8 @@ class RegisterRequest extends FormRequest
             'name' => 'required|string|min:2',
             'email' => 'required|email|unique:users',
             'password' => "required|min:6",
-            // 'dob' => 'required|date',
-            // 'location' => 'required|string|min:6',
-            // 'is_doctor' => 'required|boolean',
-            // 'gender' => 'required|boolean',
+            'is_doctor' => 'required|boolean',
+
         ];
     }
 }

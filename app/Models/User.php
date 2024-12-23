@@ -51,4 +51,38 @@ class User extends Authenticatable
     public function paientDoctors(){
         return $this->belongsToMany(User::class , 'doctor_paient' , 'paient_id' , 'doctor_id');
     }
+
+
+    public function articles(){
+        return $this->hasMany(Article::class);
+    }
+
+
+    public function specialty()
+    {
+        return $this->belongsToMany(Specialty::class, 'doctor_specialty', 'doctor_id', 'specialty_id');
+    }
+
+    public function advice(){
+        return $this->hasMany(Advice::class , 'doctor_id' );
+    }
+
+    public function comments(){
+        return $this->hasMany(Comment::class);
+    }
+
+    public function savedArticles(){
+        return $this->belongsToMany(Article::class , 'user_saved_article' , "user_id" , "article_id");
+    }
+
+
+
+    public function likedArticles()
+    {
+        return $this->belongsToMany(Article::class, 'user_liked_article')->withTimestamps();
+    }
+
+
+
+
 }

@@ -11,7 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //
+        Schema::create('advice', function (Blueprint $table) {
+            $table->id();
+            $table->string("advice");
+            $table->foreignId("doctor_id")->constrained('users')->references('id');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -19,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('advice');
     }
 };

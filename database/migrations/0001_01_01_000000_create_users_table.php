@@ -15,16 +15,19 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-
-            $table->date('dob')->nullable();
-            $table->string('location')->nullable();
-            $table->string('phone')->nullable();
-            $table->boolean('is_doctor')->nullable();
-            $table->boolean('gender')->nullable();
-            $table->text('bio')->nullable();
-
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->boolean('is_doctor')->nullable();
+
+
+
+            // $table->date('dob')->nullable();
+            // $table->string('location')->nullable();
+            // $table->string('phone')->nullable();
+            // $table->boolean('gender')->nullable();
+
+            $table->string("jop_specialty_number")->nullable();
+            $table->text('bio')->nullable();
+            $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
