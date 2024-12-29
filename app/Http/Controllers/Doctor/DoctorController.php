@@ -10,18 +10,18 @@ use App\Rules\MaxWords;
 
 class DoctorController extends Controller
 {
+
     public function my(Request $request) {
 
         $d_id = $request->user('sanctum')->id;
-        $doctor = User::whereId($d_id)->with("specialty")->get();
-        return $doctor;
-    }
+        $doctor = User::whereId($d_id)->where("is_doctor" , true)->with("specialty")->first();
 
-    // public function articles(Request $request){
-    //     $d_id = $request->user('sanctum')->id;
-    //     $articles = Article::where("user_id" , $d_id)->get();
-    //     return $articles;
-    // }
+        if ($doctor) {
+            return response()->json(['doctor' => $doctor]);
+        } else {
+            return response()->json(['message' => 'Doctor not found'], 404);
+        }
+    }
 
 
 

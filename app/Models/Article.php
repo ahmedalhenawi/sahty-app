@@ -71,7 +71,6 @@ class Article extends Model
 
     public function hasLikedArticle($user_id)
     {
-        // return $this->usersLiked()->wherePivot('user_id', $user_id)->exists();
         return $this->usersLiked()->where('user_id', $user_id)->exists();
 
     }

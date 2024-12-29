@@ -52,6 +52,23 @@ class User extends Authenticatable
         return $this->belongsToMany(User::class , 'doctor_paient' , 'paient_id' , 'doctor_id');
     }
 
+    public function toggleFollowDoctor($doctor_id)
+    {
+        if ($this->hasFollowingDoctor($doctor_id)) {
+            $this->paientDoctors()->detach($doctor_id);
+            return false;
+        } else {
+            $this->paientDoctors()->attach($doctor_id);
+            return true;
+        }
+    }
+
+    public function hasFollowingDoctor($doctor_id)
+    {
+        return $this->paientDoctors()->where('doctor_id', $doctor_id)->exists();
+
+    }
+
 
     public function articles(){
         return $this->hasMany(Article::class);

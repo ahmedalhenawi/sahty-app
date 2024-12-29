@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class UserController extends Controller
 {
     public function doctors(){
-        $doctors = User::query()->where("is_doctor" , true)->paginate(10);
+        $doctors = User::query()->where("is_doctor" , true)->with('specialty')->paginate(10);
         return response()->json($doctors);
     }
 
@@ -19,7 +19,7 @@ class UserController extends Controller
 
     public function doctorPaients(Request $request){
 
-        $paients = $request->user()->doctorPaients()->paginate(10);
+        $paients = $request->user("sanctum")->doctorPaients()->paginate(10);
         return response()->json($paients);
     }
 
@@ -30,5 +30,20 @@ class UserController extends Controller
     }
 
 
+    public function followDoctor(Request $request, $id)
+    {
+        $doctor = User::whereId($id)->where('is_doctor' , true)->exists();
+
+        if (!$doctor) {
+            return response()->json(['message' => 'Doctor not found'], 404);
+        }
+
+        $following = $request->user('sanctum')->toggleFollowDoctor($id);
+
+        return response()->json([
+            'message' => $following ? 'Doctor followed successfully' : 'Doctor unfollowed successfully',
+            'following' => $following, // Indicate whether the user is now following the doctor
+        ]);
+    }
 
 }

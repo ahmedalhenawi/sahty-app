@@ -21,7 +21,7 @@ class AuthController extends Controller
 {
     public function register(RegisterRequest $request)
     {
-        $user = User::create($request->validated());
+        $user = User::create(array_merge($request->except(["is_doctor"]) , ['is_doctor'=> boolval($request['is_doctor'])]));
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -81,7 +81,7 @@ class AuthController extends Controller
     {
         $request->validate([
             'email' => 'required|email|exists:users,email',
-            'reset_code' => 'required|string'
+            'reset_code' => 'required'
         ]);
 
 
@@ -95,7 +95,7 @@ class AuthController extends Controller
         }
 
 
-        if ($request->reset_code !== $user->reset_code) {
+        if ($request->reset_code != $user->reset_code) {
             return response()->json([
                 'message' => 'The reset code is invalid.'
             ], 400);

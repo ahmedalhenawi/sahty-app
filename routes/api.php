@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/user', function (Request $request) {
 
-    // $request->user()->sendEmailVerificationNotification();
 
     return $request->user();
 })->middleware('auth:sanctum');
@@ -34,18 +33,18 @@ Route::post('reset-password' , [AuthController::class , 'resetPassword'])->middl
 
 
 
-Route::get("doctor_paients" , [UserController::class , 'doctorPaients'])->middleware("auth:sanctum");
+// Route::get("doctor_paients" , [UserController::class , 'doctorPaients'])->middleware("auth:sanctum");
 Route::get("paient_doctors" , [UserController::class , 'paientDoctors'])->middleware("auth:sanctum");
 
 
 
-Route::apiResource('article' , ArticleController::class)->middleware('auth:sanctum');
 
 
 Route::prefix('doctor')->group(function () {
 
     Route::get("my" , [DoctorController::class , 'my']);
     Route::put("update-bio" , [DoctorController::class , 'updateBio']);
+    Route::get("paients" ,  [UserController::class , 'doctorPaients']);
 
 
     Route::get("articles" , [ArticleController::class , 'geDoctorArticles']);
@@ -76,6 +75,9 @@ Route::post('article/{id}/like' , [ArticleController::class , 'likeArticle']);
 
 Route::prefix('user')->group(function () {
 
-Route::get('get-today-advices' , [AdviceController::class , 'todayAdvice']);
+Route::post('follow-doctor/{id}'  , [UserController::class , "followDoctor"]);
+Route::get("doctors" , [UserController::class , 'paientDoctors']);
+
+Route::get('get-today-advice' , [AdviceController::class , 'todayAdvice']);
 
 })->middleware('auth:sanctum');
