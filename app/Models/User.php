@@ -77,7 +77,7 @@ class User extends Authenticatable
 
     public function specialty()
     {
-        return $this->belongsToMany(Specialty::class, 'doctor_specialty', 'doctor_id', 'specialty_id');
+        return $this->belongsToMany(Specialty::class, 'doctor_specialty', 'doctor_id', 'specialty_id')->withTimestamps();
     }
 
     public function advice(){

@@ -17,7 +17,6 @@ return new class extends Migration
             $table->text('subject');
             $table->string('img')->nullable();
             $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('specialty_id')->constrained('specialties')->nullable();
             $table->timestamps();
         });
     }
