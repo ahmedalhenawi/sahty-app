@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Article;
+use App\Policies\ArticlePolicy;
 use App\Rules\MaxWords;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rules\File;
 use Illuminate\Support\Facades\Storage;
 
@@ -27,7 +29,6 @@ class ArticleController extends Controller
         $doctors_id = User::find($user_id)->paientDoctors()->get()->pluck('id')->toArray();
         // dd($doctors_id);
         $articles = Article::whereIn("user_id"  ,  $doctors_id)->paginate(5);
-
         return ($articles);
     }
     /**
@@ -41,14 +42,21 @@ class ArticleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request )
     {
+
+        if(!$request->user('sanctum')->is_doctor){
+            return response()->json([
+                "message" => "You can not add Article"
+            ],403);
+        }
 
         $request->validate([
             'title'=> 'required',
             "subject" => ['required' , new MaxWords(250)],
             "img"=>['extensions:jpeg,png,jpg,gif' , File::image()->max(5 * 1024)]
-        ]);
+        ]
+    );
 
         $id = $request->user('sanctum')->id;
         $doctor = User::where('id' , $id)->first();
@@ -84,15 +92,21 @@ class ArticleController extends Controller
      */
     public function update(Request $request,  $id)
     {
+        $article = Article::findOrFail($id);
+
+        if($request->user('sanctum')->id !== $article->user_id){
+            return response()->json([
+                "message" => "You can not modify this Article"
+            ],403);
+        }
+
         $request->validate([
-            "id" =>'exists:articles,id',
             'title'=> 'required',
             "subject" => ['required' , new MaxWords(250)],
             "img"=>['extensions:jpeg,png,jpg,gif' , File::image()->max(5 * 1024)]
         ]);
 
 
-        $article = Article::find($id);
 
 
 
@@ -122,14 +136,16 @@ class ArticleController extends Controller
     public function destroy(Request $request , $id)
     {
 
-        $request->validate([
-            'id' =>"required|exists:articles,id"
-        ]);
+        $article = Article::findOrFail($id);
 
+        if($request->user('sanctum')->id !== $article->user_id){
+            return response()->json([
+                "message" => "You can not modify this Article"
+            ],403);
+        }
 
-        $deleted = Article::destroy($id);
+        $deleted = $article->delete();
         return response()->json($deleted?"Deleted successfully":"failed delete");
-
 
     }
 
@@ -162,6 +178,7 @@ class ArticleController extends Controller
 
         return $articles;
     }
+
 
 
 }

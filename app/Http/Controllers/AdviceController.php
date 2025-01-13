@@ -21,6 +21,13 @@ class AdviceController extends Controller
     }
 
     public function store(Request $request){
+
+        if(!$request->user('sanctum')->is_doctor){
+            return response()->json([
+                "message" => "You can not add Article"
+            ],403);
+        }
+
         $request->validate([
             'advice'=> ['required' , new MaxWords(50)]
         ]);
@@ -32,9 +39,16 @@ class AdviceController extends Controller
 
     public function update(Request $request , $id){
 
+
+        $advice = Advice::findOrFail($id);
+        if($request->user('sanctum')->id !== $advice->doctor_id){
+            return response()->json([
+                "message" => "You can not modify this Article"
+            ],403);
+        }
+
         $request->validate([
             'advice' =>'required',
-            "id" => "required|exists:advice,id"
         ]);
 
         $updated = Advice::find($id)->update([
@@ -47,11 +61,14 @@ class AdviceController extends Controller
 
     public function destroy(Request $request , $id){
 
-        $request->validate([
-            "id"=> "required|exists:advice,id"
-        ]);
+        $advice = Advice::findOrFail($id);
+        if($request->user('sanctum')->id !== $advice->doctor_id){
+            return response()->json([
+                "message" => "You can not modify this Article"
+            ],403);
+        }
 
-        $deleted = Advice::find($id)->delete();
+        $deleted = $advice->delete();
 
         return response()->json($deleted?"Deleted successfully":"failed delete");
 

@@ -25,7 +25,7 @@ class UserController extends Controller
 
     public function paientDoctors(Request $request){
 
-        $doctors = $request->user()->paientDoctors()->paginate(10);
+        $doctors = $request->user('sanctum')->paientDoctors()->paginate(10);
         return response()->json($doctors);
     }
 
