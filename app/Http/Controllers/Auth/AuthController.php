@@ -23,8 +23,11 @@ class AuthController extends Controller
 {
     public function register(RegisterRequest $request)
     {
-        $user = User::create(array_merge($request->except(["is_doctor"]) , ['is_doctor'=> boolval($request['is_doctor'])]));
+        $user = User::create(array_merge($request->except(["is_doctor" , 'password_confirmation' , 'specialty_id']) , ['is_doctor'=> boolval($request['is_doctor'])]));
 
+        if($request->specialty_id){
+            $user->specialty()->attach($request->specialty_id);
+        }
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
