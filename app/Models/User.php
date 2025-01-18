@@ -81,7 +81,7 @@ class User extends Authenticatable
     }
 
     public function advice(){
-        return $this->hasMany(Advice::class , 'doctor_id' );
+        return $this->hasMany(Advice::class , 'doctor_id' , 'id' );
     }
 
     public function comments(){

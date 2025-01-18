@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -20,7 +21,8 @@ class UserController extends Controller
     public function doctorPaients(Request $request){
 
         $paients = $request->user("sanctum")->doctorPaients()->paginate(10);
-        return response()->json($paients);
+
+        return response()->json(UserResource::collection($paients));
     }
 
     public function paientDoctors(Request $request){

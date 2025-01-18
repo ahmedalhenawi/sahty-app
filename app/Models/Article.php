@@ -11,7 +11,7 @@ class Article extends Model
     protected $guarded = [];
 
     public function doctor(){
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class , 'user_id' ,'id');
     }
 
     public static function ScopeGetSpecialtyArticles (Builder $query , $id){

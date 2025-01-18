@@ -38,7 +38,7 @@ return [
     'digits_between' => ':attribute يجب أن يكون بين :min و :max أرقام.',
     'password' => 'كلمة المرور غير صحيحة.',
     'boolean' => ':attribute يجب أن يكون قيمة منطقية (صحيح أو خطأ).',
-
+    'required_if' => 'حقل :attribute مطلوب عندما يكون :other يساوي :value.',
 
     'attributes' => [
         'title' => 'العنوان',
@@ -50,8 +50,10 @@ return [
         'email' => 'البريد الإلكتروني',
         'password' => 'كلمة المرور',
         'is_doctor'=> 'صلاحية الطبيب',
-        'reset_code' => 'رمز التحقق'
-    ]
+        'reset_code' => 'رمز التحقق',
+        'jop_specialty_number' => "رقم التخصص الوظيفي "
+    ],
 
 
 ];
+

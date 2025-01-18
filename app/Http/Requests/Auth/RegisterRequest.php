@@ -24,8 +24,10 @@ class RegisterRequest extends FormRequest
         return [
             'name' => 'required|string|min:2',
             'email' => 'required|email|unique:users',
-            'password' => "required|min:6",
+            'password' => "required|confirmed|min:6",
             'is_doctor' => 'required|boolean',
+            'jop_specialty_number' => 'required_if:is_doctor,true|numeric|digits:6',
+            'specialty_id' => 'required_if:is_doctor,true|numeric|exists:specialties,id',
 
         ];
     }

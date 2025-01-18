@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ArticleResource;
 use App\Models\User;
 use App\Models\Article;
 use App\Policies\ArticlePolicy;
@@ -28,8 +29,8 @@ class ArticleController extends Controller
         $user_id = $request->user('sanctum')->id;
         $doctors_id = User::find($user_id)->paientDoctors()->get()->pluck('id')->toArray();
         // dd($doctors_id);
-        $articles = Article::whereIn("user_id"  ,  $doctors_id)->paginate(5);
-        return ($articles);
+        $articles = Article::with('doctor')->whereIn("user_id"  ,  $doctors_id)->paginate(5);
+        return ArticleResource::collection($articles);
     }
     /**
      * Display a listing of the resource.

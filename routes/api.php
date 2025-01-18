@@ -18,6 +18,9 @@ Route::get('/user', function (Request $request) {
 
 
 Route::post("register" , [AuthController::class , "register"]);
+Route::get('specialties' , [DoctorController::class , 'specialties']);
+
+
 Route::post("login" , [AuthController::class , "login"]);
 
 Route::post("logout" , [AuthController::class , "logout"])->middleware("auth:sanctum");
@@ -27,7 +30,7 @@ Route::post("forget-password" , [AuthController::class , 'forgetPassword']);
 Route::post('check-code' , [AuthController::class , 'checkCode']);
 Route::post('reset-password' , [AuthController::class , 'resetPassword'])->middleware(['auth:sanctum']);
 
-
+Route::post('change-password' , [AuthController::class , 'changePassword'])->middleware(['auth:sanctum']);
 
 
 
@@ -44,7 +47,9 @@ Route::prefix('doctor')->middleware('auth:sanctum')->group(function () {
 
     Route::get("my" , [DoctorController::class , 'my']);
     Route::put("update-bio" , [DoctorController::class , 'updateBio']);
-    Route::get("paients" ,  [UserController::class , 'doctorPaients']);
+    Route::get("followers" ,  [UserController::class , 'doctorPaients']);
+    Route::get("info" ,  [DoctorController::class , 'info']);
+    Route::post('update-img' , [DoctorController::class , 'updateImg']);
 
 
     Route::get("articles" , [ArticleController::class , 'geDoctorArticles']);
@@ -79,6 +84,9 @@ Route::middleware('auth:sanctum')->group(function(){
 });
 
 Route::prefix('user')->middleware('auth:sanctum')->group(function () {
+
+
+Route::post('update-img' , [DoctorController::class, 'updateImg']);
 
 Route::post('follow-doctor/{id}'  , [UserController::class , "followDoctor"]);
 Route::get("doctors" , [UserController::class , 'paientDoctors']);

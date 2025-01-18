@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Password;
 
 use Laravel\Sanctum\PersonalAccessToken;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Resources\DoctorResource;
+use App\Http\Resources\UserResource;
 
 class AuthController extends Controller
 {
@@ -26,7 +28,7 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'user' => $user,
+            'user' => $user->is_doctor? new DoctorResource($user): new UserResource($user),
             'token' => $token,
         ], 201);
     }
@@ -43,7 +45,7 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'user' => $user,
+            'user' => $user->is_doctor? new DoctorResource($user): new UserResource($user),
             'token' => $token,
         ], 200);
     }
@@ -133,4 +135,29 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
+
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'last_password' => 'required',
+            'password' => 'required|confirmed|min:6',
+        ]);
+
+        $user = $request->user('sanctum');
+
+        if (!Hash::check($request->last_password, $user->password)) {
+            return response()->json([
+                'message' => 'كلمة المرور الحالية غير صحيحة.',
+            ], 422); // 422 Unprocessable Entity
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return response()->json([
+            'message' => 'تم تغيير كلمة المرور بنجاح.',
+        ], 200); // 200 OK
+
+}
 }
