@@ -10,11 +10,12 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\DoctorResource;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Validation\Rules\File;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\SpecialtyResource;
-
+use App\Http\Resources\UserResource;
 
 class DoctorController extends Controller
 {
@@ -138,7 +139,7 @@ class DoctorController extends Controller
         if ($updated) {
             return response()->json([
                 'message' => 'Profile updated successfully!',
-                'user' => $request->user()
+                'user' => $request->user()->is_doctor?new DoctorResource($request->user()):new UserResource($request->user())
             ], 200);
         } else {
             return response()->json([
