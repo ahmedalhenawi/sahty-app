@@ -21,8 +21,8 @@ class ArticleController extends Controller
     public function geDoctorArticles(Request $request){
 
         $d_id = $request->user('sanctum')->id;
-        $articles = Article::where("user_id" , $d_id)->paginate(5);
-        return $articles;
+        $articles = Article::with('doctor')->where("user_id" , $d_id)->paginate(5);
+        return ArticleResource::collection($articles);
     }
 
     public function getUserArticles(Request $request){
