@@ -5,13 +5,15 @@ namespace App\Http\Controllers\Doctor;
 use App\Models\User;
 use App\Models\Article;
 use App\Rules\MaxWords;
+use App\Models\Specialty;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\SpecialtyResource;
-use App\Models\Specialty;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Validation\Rules\File;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Resources\SpecialtyResource;
 
 
 class DoctorController extends Controller
@@ -107,5 +109,41 @@ class DoctorController extends Controller
             'number_of_articles' => $numberOfArticles,
             'number_of_advice' => $numberOfAdvice,
         ], 200); // 200 OK
+    }
+
+
+    public function UpdateProfile(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email',
+            'img' => ['nullable', 'file', 'mimes:jpeg,png,jpg,gif', 'max:5120'], // 5MB
+            'bio' => [Rule::requiredIf(fn () => $request->user()->is_doctor), new MaxWords(50)],
+            'jop_specialty_number' => [Rule::requiredIf(fn () => $request->user()->is_doctor), 'string', 'max:6'],
+        ]);
+
+        // Handle image upload if present
+        if ($request->hasFile('img')) {
+
+            $imageName = "user_". Str::random(10) ."_". time() .'.'. $request->file('img')->extension();
+
+            $imagePath = $request->file('img')->storePubliclyAs('users'  , $imageName , 'public' );
+            $validated['img'] = $imagePath;
+        }
+
+        // Update the user profile
+        $updated = $request->user()->update($validated);
+
+        // Return appropriate response
+        if ($updated) {
+            return response()->json([
+                'message' => 'Profile updated successfully!',
+                'user' => $request->user()
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'Failed to update profile.',
+            ], 500);
+        }
     }
 }
