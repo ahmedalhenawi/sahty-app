@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\AdviceResource;
 use App\Models\User;
 use App\Models\Advice;
 use App\Rules\MaxWords;
@@ -17,7 +18,8 @@ class AdviceController extends Controller
 
     public function doctorTodayAdvice(Request $request){
         $d_id = $request->user('sanctum')->id;
-        return Advice::where('doctor_id' , $d_id)->postedToday()->paginate(5);
+        $advice = Advice::where('doctor_id' , $d_id)->postedToday()->paginate(5);
+        return AdviceResource::collection($advice);
     }
 
     public function store(Request $request){
