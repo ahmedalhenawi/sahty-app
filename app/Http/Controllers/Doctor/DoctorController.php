@@ -129,7 +129,7 @@ class DoctorController extends Controller
             $imageName = "user_". Str::random(10) ."_". time() .'.'. $request->file('img')->extension();
 
             $imagePath = $request->file('img')->storePubliclyAs('users'  , $imageName , 'public' );
-            $validated['img'] = $imagePath;
+            $validated['img'] = "/storage/".$imagePath;
         }
 
         // Update the user profile
