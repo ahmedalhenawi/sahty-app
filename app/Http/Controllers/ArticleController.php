@@ -133,6 +133,38 @@ class ArticleController extends Controller
         return response()->json("updated successfully");
     }
 
+
+    public function updateImg(Request $request , $id){
+
+        $request->validate([
+            "img"=>[ 'required' , 'extensions:jpeg,png,jpg,gif' , File::image()->max(5 * 1024)]
+        ]);
+        $article = Article::findOrFail($id);
+
+        if($request->user('sanctum')->id !== $article->user_id){
+            return response()->json([
+                "message" => "You can not modify this Article"
+            ],403);
+        }
+
+        $imageUrl=null;
+
+        if($request->hasFile('img')){
+            $image = $request->file('img');
+            $imageName = "article_". Str::random(10) ."_". time() .'.'. $image->extension();
+            $path = $image->storePubliclyAs('article', $imageName, 'public');
+
+            $imageUrl = Storage::url($path);
+
+        }
+
+        $updated = $article->update([
+            'img' => $imageUrl?$imageUrl:$article->img
+        ]);
+
+        return response()->json("Image updated successfully");
+    }
+
     /**
      * Remove the specified resource from storage.
      */

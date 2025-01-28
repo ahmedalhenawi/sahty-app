@@ -49,13 +49,14 @@ Route::prefix('doctor')->middleware('auth:sanctum')->group(function () {
 //    Route::put("update-bio" , [DoctorController::class , 'updateBio']);
     Route::get("followers" ,  [UserController::class , 'doctorPaients']);
     Route::get("info" ,  [DoctorController::class , 'info']);
-//    Route::post('update-img' , [DoctorController::class , 'updateImg']);
+    Route::post('update-img' , [DoctorController::class , 'updateImg']);
     Route::post('update-profile' , [DoctorController::class , 'updateProfile']) ; ;
 
 
     Route::get("articles" , [ArticleController::class , 'geDoctorArticles']);
     Route::post("article/store" , [ArticleController::class , 'store']);
     Route::post('article/{id}/update',[ArticleController::class , 'update']);
+    Route::post('article/{id}/update-img',[ArticleController::class , 'updateImg']);
     Route::delete("article/delete/{id}" , [ArticleController::class , "destroy"]);
 
 
@@ -90,7 +91,7 @@ Route::middleware('auth:sanctum')->group(function(){
 Route::prefix('user')->middleware('auth:sanctum')->group(function () {
 
 
-// Route::post('update-img' , [DoctorController::class, 'updateImg']);
+Route::post('update-img' , [DoctorController::class, 'updateImg']);
 
 Route::post('update-profile' , [DoctorController::class , 'updateProfile']) ; ;
 
