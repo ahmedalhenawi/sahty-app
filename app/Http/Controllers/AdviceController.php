@@ -13,7 +13,9 @@ class AdviceController extends Controller
     public function todayAdvice(Request $request){
         $id = $request->user('sanctum')->id;
         $followingDoctor = User::where('id' , $id)->first()->paientDoctors()->get();
-        return Advice::whereIn('doctor_id' , $followingDoctor->pluck('id')->toArray())->postedToday()->paginate(5);
+        $advice = Advice::whereIn('doctor_id' , $followingDoctor->pluck('id')->toArray())->postedToday()->paginate(5);
+        return AdviceResource::collection($advice);
+
     }
 
     public function doctorTodayAdvice(Request $request){
