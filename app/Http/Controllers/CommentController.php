@@ -30,7 +30,7 @@ class CommentController extends Controller
 
         $created= User::find($user_id)->comments()->create([
             "comment" => $request->comment,
-            "article_id" => $id
+            "article_id" => intval($id)
         ]);
 
         return new CommentResource($created);

@@ -81,10 +81,10 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('article/{id}/save' , [ArticleController::class , 'saveArticle']);
     Route::post('article/{id}/like' , [ArticleController::class , 'likeArticle']);
 
+    Route::get('speciaty/{specialty}/doctors' , [DoctorController::class , 'specialtyDoctors'])->whereNumber('specialty');
 
 });
 
-Route::get('speciaty/{specialty}/doctors' , [DoctorController::class , 'specialtyDoctors'])->whereNumber('specialty');
 
 
 Route::prefix('user')->middleware('auth:sanctum')->group(function () {
