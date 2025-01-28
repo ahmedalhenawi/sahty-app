@@ -84,6 +84,9 @@ Route::middleware('auth:sanctum')->group(function(){
 
 });
 
+Route::get('speciaty/{specialty}/doctors' , [DoctorController::class , 'specialtyDoctors'])->whereNumber('specialty');
+
+
 Route::prefix('user')->middleware('auth:sanctum')->group(function () {
 
 

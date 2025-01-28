@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CommentResource;
 use App\Models\User;
 use App\Models\Article;
 use App\Models\Comment;
@@ -15,7 +16,7 @@ class CommentController extends Controller
 
         $comments = Article::find($id)->comments()->with("user")->get();
 
-        return response()->json($comments);
+        return response()->json(CommentResource::collection($comments));
 
     }
 
@@ -32,7 +33,7 @@ class CommentController extends Controller
             "article_id" => $id
         ]);
 
-        return $created;
+        return new CommentResource($created);
     }
 
     public function destroy(Request $reqest , $id){

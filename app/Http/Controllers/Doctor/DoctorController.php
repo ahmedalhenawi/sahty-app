@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Doctor;
 
 use App\Models\User;
-use App\Models\Article;
 use App\Rules\MaxWords;
 use App\Models\Specialty;
 use Illuminate\Support\Str;
@@ -11,7 +10,6 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DoctorResource;
-use Illuminate\Support\Facades\Redis;
 use Illuminate\Validation\Rules\File;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\SpecialtyResource;
@@ -147,4 +145,12 @@ class DoctorController extends Controller
             ], 500);
         }
     }
+
+    public function specialtyDoctors(Request $request , Specialty $specialty){
+//        dd($request->user() , $specialty);
+        $doctors = $specialty->doctors()->get();
+ //       dd($doctors);
+        return DoctorResource::collection($doctors);
+    }
+
 }
