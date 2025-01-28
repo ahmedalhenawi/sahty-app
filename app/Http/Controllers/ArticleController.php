@@ -74,10 +74,12 @@ class ArticleController extends Controller
 
         }
 
-        return  $doctor->articles()->create(array_merge(
+        $article =  $doctor->articles()->create(array_merge(
                                                         $request->only('title' , 'subject') ,
                                                          [ "img"=>$imageUrl]
                                                                 ));
+
+        return new ArticleResource($article);
     }
 
     /**
@@ -177,7 +179,7 @@ class ArticleController extends Controller
         $user_id = $request->user('sanctum')->id;
         $articles = User::find($user_id)->savedArticles()->paginate(5);
 
-        return $articles;
+       return ArticleResource::collection($articles);
     }
 
 

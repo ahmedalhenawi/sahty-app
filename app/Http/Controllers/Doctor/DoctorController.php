@@ -147,9 +147,8 @@ class DoctorController extends Controller
     }
 
     public function specialtyDoctors(Request $request , Specialty $specialty){
-//        dd($request->user() , $specialty);
+
         $doctors = $specialty->doctors()->get();
- //       dd($doctors);
         return DoctorResource::collection($doctors);
     }
 
