@@ -21,7 +21,7 @@ class ArticleController extends Controller
     public function geDoctorArticles(Request $request){
 
         $d_id = $request->user('sanctum')->id;
-        $articles = Article::with('doctor')->where("user_id" , $d_id)->paginate(5);
+        $articles = Article::with('doctor')->where("user_id" , $d_id)->paginate(50);
         return ArticleResource::collection($articles);
     }
 
@@ -29,7 +29,7 @@ class ArticleController extends Controller
         $user_id = $request->user('sanctum')->id;
         $doctors_id = User::find($user_id)->paientDoctors()->get()->pluck('id')->toArray();
         // dd($doctors_id);
-        $articles = Article::with('doctor')->whereIn("user_id"  ,  $doctors_id)->paginate(5);
+        $articles = Article::with('doctor')->whereIn("user_id"  ,  $doctors_id)->paginate(50);
         return ArticleResource::collection($articles);
     }
     /**
@@ -209,7 +209,7 @@ class ArticleController extends Controller
 
     public function getSavedArticles(Request $request){
         $user_id = $request->user('sanctum')->id;
-        $articles = User::find($user_id)->savedArticles()->paginate(5);
+        $articles = User::find($user_id)->savedArticles()->paginate(50);
 
        return ArticleResource::collection($articles);
     }
