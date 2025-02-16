@@ -38,7 +38,8 @@ class AdviceController extends Controller
 
         $id = $request->user('sanctum')->id;
         $doctor = User::find($id);
-        return $doctor->advice()->create(['advice'=>$request['advice']]);
+        $advice = $doctor->advice()->create(['advice'=>$request['advice']]);
+        return new AdviceResource($advice);
     }
 
     public function update(Request $request , $id){
@@ -55,11 +56,14 @@ class AdviceController extends Controller
             'advice' =>'required',
         ]);
 
-        $updated = Advice::find($id)->update([
+        $advice = Advice::find($id);
+        $advice->update([
             "advice" => $request->advice
         ]);
 
-        return response()->json($updated?"Updated successfully":"failed update");
+
+        return new AdviceResource($advice);
+
 
     }
 
