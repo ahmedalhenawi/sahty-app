@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\DoctorResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Notifications\NewFollowerNotifiacation;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -35,13 +36,17 @@ class UserController extends Controller
 
     public function followDoctor(Request $request, $id)
     {
-        $doctor = User::whereId($id)->where('is_doctor' , true)->exists();
+        $doctor = User::whereId($id)->where('is_doctor' , true)->first();
 
         if (!$doctor) {
             return response()->json(['message' => 'Doctor not found'], 404);
         }
 
         $following = $request->user('sanctum')->toggleFollowDoctor($id);
+
+        if($following){
+            $doctor->notify(new NewFollowerNotifiacation($request->user('sanctum')->name));
+        }
 
         return response()->json([
             'message' => $following ? 'Doctor followed successfully' : 'Doctor unfollowed successfully',

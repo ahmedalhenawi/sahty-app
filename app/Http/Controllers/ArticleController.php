@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ArticleResource;
 use App\Models\User;
 use App\Models\Article;
+use App\Notifications\NewArticleNotifiacation;
 use App\Policies\ArticlePolicy;
 use App\Rules\MaxWords;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rules\File;
 use Illuminate\Support\Facades\Storage;
 
@@ -78,6 +80,9 @@ class ArticleController extends Controller
                                                         $request->only('title' , 'subject') ,
                                                          [ "img"=>$imageUrl]
                                                                 ));
+
+        $users = $doctor->doctorPaients()->get();
+        Notification::send($users , new NewArticleNotifiacation($doctor->name));
 
         return new ArticleResource($article);
     }

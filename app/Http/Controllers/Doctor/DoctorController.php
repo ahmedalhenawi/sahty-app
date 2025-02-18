@@ -10,10 +10,12 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DoctorResource;
+use App\Http\Resources\NotificationResource;
 use Illuminate\Validation\Rules\File;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\SpecialtyResource;
 use App\Http\Resources\UserResource;
+use Illuminate\Notifications\Notification;
 
 class DoctorController extends Controller
 {
@@ -152,4 +154,11 @@ class DoctorController extends Controller
         return DoctorResource::collection($doctors);
     }
 
+
+    public function notifications(Request $request){
+            $notifications = $request->user('sanctum')->notifications;
+
+            return response()->json(NotificationResource::collection($notifications));
+            // return $notifications;
+    }
 }

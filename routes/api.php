@@ -52,6 +52,7 @@ Route::prefix('doctor')->middleware('auth:sanctum')->group(function () {
     Route::post('update-img' , [DoctorController::class , 'updateImg']);
     Route::post('update-profile' , [DoctorController::class , 'updateProfile']) ; ;
 
+    Route::get('notifications' ,[DoctorController::class , 'notifications']);
 
     Route::get("articles" , [ArticleController::class , 'geDoctorArticles']);
     Route::post("article/store" , [ArticleController::class , 'store']);
@@ -99,5 +100,7 @@ Route::post('follow-doctor/{id}'  , [UserController::class , "followDoctor"]);
 Route::get("doctors" , [UserController::class , 'paientDoctors']);
 
 Route::get('get-today-advice' , [AdviceController::class , 'todayAdvice']);
+
+Route::get('notifications' ,[DoctorController::class , 'notifications']);
 
 });
