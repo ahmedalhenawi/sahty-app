@@ -18,6 +18,8 @@ class NotificationResource extends JsonResource
             'type' => explode("\\", $this->type)[2],
             'title' => $this->data['title'],
             'description' => $this->data['description'],
+            'created_at' => $this->updated_at->diffForHumans()
+
         ];
     }
 }

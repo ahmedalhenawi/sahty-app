@@ -72,7 +72,7 @@ class ArticleController extends Controller
             $imageName = "article_". Str::random(10) ."_". time() .'.'. $image->extension();
             $path = $image->storePubliclyAs('article', $imageName, 'public');
 
-            $imageUrl = Storage::url($path);
+            $imageUrl = "127.0.0.1:8000".Storage::url($path);
 
         }
 
@@ -159,7 +159,7 @@ class ArticleController extends Controller
             $imageName = "article_". Str::random(10) ."_". time() .'.'. $image->extension();
             $path = $image->storePubliclyAs('article', $imageName, 'public');
 
-            $imageUrl = Storage::url($path);
+            $imageUrl = "127.0.0.1:8000".Storage::url($path);
 
         }
 
