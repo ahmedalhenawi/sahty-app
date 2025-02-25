@@ -13,14 +13,14 @@ class AdviceController extends Controller
     public function todayAdvice(Request $request){
         $id = $request->user('sanctum')->id;
         $followingDoctor = User::where('id' , $id)->first()->paientDoctors()->get();
-        $advice = Advice::whereIn('doctor_id' , $followingDoctor->pluck('id')->toArray())->postedToday()->paginate(50);
+        $advice = Advice::whereIn('doctor_id' , $followingDoctor->pluck('id')->toArray())->postedToday()->orderBy('created_at', 'desc')->paginate(50);
         return AdviceResource::collection($advice);
 
     }
 
     public function doctorTodayAdvice(Request $request){
         $d_id = $request->user('sanctum')->id;
-        $advice = Advice::where('doctor_id' , $d_id)->postedToday()->paginate(50);
+        $advice = Advice::where('doctor_id' , $d_id)->postedToday()->orderBy('created_at', 'desc')->paginate(50);
         return AdviceResource::collection($advice);
     }
 

@@ -21,7 +21,9 @@ class ArticleResource extends JsonResource
             'img' => $this->img,
             'doctor'=> new UserResource($this->doctor),
             'num_comments'=> $this->num_comments,
-            'num_likes'=> $this->num_likes
+            'num_likes'=> $this->num_likes,
+            'created_at' => $this->updated_at->diffForHumans()
+
         ];
     }
 }
