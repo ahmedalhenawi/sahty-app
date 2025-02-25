@@ -74,6 +74,7 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
     Route::get('articles' , [ArticleController::class , 'getUserArticles']);
+    Route::get('doctors-articles' , [ArticleController::class , 'getDoctorsArticles']);
     Route::get('articles/saved' , [ArticleController::class , 'getSavedArticles']);
 
     Route::get("article/{id}/comments" , [CommentController::class , 'getArticleComments']);

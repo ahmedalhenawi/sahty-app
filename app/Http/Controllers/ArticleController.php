@@ -27,6 +27,11 @@ class ArticleController extends Controller
         return ArticleResource::collection($articles);
     }
 
+    public function getDoctorsArticles(Request $request){
+        $articles = Article::with('doctor')->paginate(50);
+        return ArticleResource::collection($articles);
+    }
+
     public function getUserArticles(Request $request){
         $user_id = $request->user('sanctum')->id;
         $doctors_id = User::find($user_id)->paientDoctors()->get()->pluck('id')->toArray();
