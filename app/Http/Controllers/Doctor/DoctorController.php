@@ -71,7 +71,7 @@ class DoctorController extends Controller
         $imageName = "user_". Str::random(10) ."_". time() .'.'. $image->extension();
         $path = $image->storePubliclyAs('users', $imageName, 'public');
 
-        $imageUrl = "127.0.0.1:8000".Storage::url($path);
+        $imageUrl = "http://127.0.0.1:8000".Storage::url($path);
         $request->user('sanctum')->img = $imageUrl;
         $request->user('sanctum')->save();
         return response()->json([
@@ -129,7 +129,7 @@ class DoctorController extends Controller
             $imageName = "user_". Str::random(10) ."_". time() .'.'. $request->file('img')->extension();
 
             $imagePath = $request->file('img')->storePubliclyAs('users'  , $imageName , 'public' );
-            $validated['img'] = "127.0.0.1:8000"."/storage/".$imagePath;
+            $validated['img'] = "http://127.0.0.1:8000"."/storage/".$imagePath;
         }
 
         // Update the user profile

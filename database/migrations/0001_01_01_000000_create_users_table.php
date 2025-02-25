@@ -20,10 +20,6 @@ return new class extends Migration
 
 
 
-            // $table->date('dob')->nullable();
-            // $table->string('location')->nullable();
-            // $table->string('phone')->nullable();
-            // $table->boolean('gender')->nullable();
 
             $table->string("jop_specialty_number")->nullable();
             $table->text('bio')->nullable();

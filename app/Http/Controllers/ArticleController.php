@@ -72,7 +72,7 @@ class ArticleController extends Controller
             $imageName = "article_". Str::random(10) ."_". time() .'.'. $image->extension();
             $path = $image->storePubliclyAs('article', $imageName, 'public');
 
-            $imageUrl = "127.0.0.1:8000".Storage::url($path);
+            $imageUrl = "http://127.0.0.1:8000".Storage::url($path);
 
         }
 
@@ -159,7 +159,7 @@ class ArticleController extends Controller
             $imageName = "article_". Str::random(10) ."_". time() .'.'. $image->extension();
             $path = $image->storePubliclyAs('article', $imageName, 'public');
 
-            $imageUrl = "127.0.0.1:8000".Storage::url($path);
+            $imageUrl = "http://127.0.0.1:8000".Storage::url($path);
 
         }
 
@@ -195,8 +195,12 @@ class ArticleController extends Controller
         $article = Article::find($id);
         $user_id = $request->user('sanctum')->id;
         // dd($user_id);
-        $saved = $article->toggleArticleLike($user_id);
-        return $saved;
+        $liked = $article->toggleArticleLike($user_id);
+
+        return response()->json([
+            'message' => $liked ? 'Article liked successfully' : 'Article unliked successfully',
+            'like' => $liked,
+        ]);
 
     }
 
@@ -207,7 +211,11 @@ class ArticleController extends Controller
         $user_id = $request->user('sanctum')->id;
 
         $saved = $article->toggleArticleSave($user_id);
-        return $saved;
+
+        return response()->json([
+            'message' => $saved ? 'Article saved successfully' : 'Article unsaves successfully',
+            'saved' => $saved,
+        ]);
 
     }
 

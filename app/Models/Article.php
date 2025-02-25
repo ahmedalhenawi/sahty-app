@@ -35,8 +35,10 @@ class Article extends Model
     {
         if ($this->hasSavedArticle($user_id)) {
             $this->usersSaved()->detach($user_id);
+            return false;
         } else {
             $this->usersSaved()->attach($user_id);
+            return true;
         }
     }
 
@@ -64,9 +66,12 @@ class Article extends Model
     {
         if ($this->hasLikedArticle($user_id)) {
             $this->usersLiked()->detach($user_id);
+            return false;
         } else {
             $this->usersLiked()->attach($user_id);
+            return true;
         }
+
     }
 
     public function hasLikedArticle($user_id)
@@ -74,5 +79,14 @@ class Article extends Model
         return $this->usersLiked()->where('user_id', $user_id)->exists();
 
     }
+
+    public function getNumCommentsAttribute(){
+        return $this->comments()->count();
+    }
+
+    public function getNumLikesAttribute(){
+        return $this->usersLiked()->count();
+    }
+
 
 }

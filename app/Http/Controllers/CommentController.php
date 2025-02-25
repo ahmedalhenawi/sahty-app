@@ -6,8 +6,10 @@ use App\Http\Resources\CommentResource;
 use App\Models\User;
 use App\Models\Article;
 use App\Models\Comment;
+use App\Notifications\NewCommentNotification;
 use App\Rules\MaxWords;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 
 class CommentController extends Controller
 {
@@ -32,6 +34,9 @@ class CommentController extends Controller
             "comment" => $request->comment,
             "article_id" => intval($id)
         ]);
+
+        $article = Article::with('doctor')->find($id);
+        Notification::send($article->doctor , new NewCommentNotification($request->user("sanctum")->name , $article->title));
 
         return new CommentResource($created);
     }
