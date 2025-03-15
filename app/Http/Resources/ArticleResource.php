@@ -20,9 +20,14 @@ class ArticleResource extends JsonResource
             'subject' => $this->subject,
             'img' => $this->img,
             'doctor'=> new UserResource($this->doctor),
-            'num_comments'=> $this->num_comments,
-            'num_likes'=> $this->num_likes,
+            'article_info' => [
+                'num_comments'=> $this->num_comments,
+                'num_likes'=> $this->num_likes,
+                'is_liked'=> $this->hasLikedArticle($request->user('sanctum')->id),
+                'is_saved'=> $this->hasSavedArticle($request->user('sanctum')->id)
+            ],
             'created_at' => $this->updated_at->diffForHumans()
+
 
         ];
     }
